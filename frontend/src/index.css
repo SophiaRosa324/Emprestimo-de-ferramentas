@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { font-family: 'DM Sans', sans-serif; }
+
+  body {
+    @apply bg-iron-950 text-iron-100 antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(251,191,36,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 110%, rgba(251,191,36,0.04) 0%, transparent 55%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-iron-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-iron-600 rounded-full; }
+}
+
+@layer components {
+  .card {
+    @apply bg-iron-900/60 border border-iron-700/50 rounded-2xl backdrop-blur-sm;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400
+           text-iron-950 font-semibold rounded-xl text-sm transition-all duration-150
+           active:scale-95 shadow-lg shadow-amber-500/20;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-iron-300 hover:text-iron-100
+           hover:bg-iron-800 rounded-xl text-sm transition-all duration-150 active:scale-95;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-red-900/40 hover:bg-red-800/60
+           text-red-400 hover:text-red-300 border border-red-800/50 rounded-xl text-sm
+           transition-all duration-150 active:scale-95;
+  }
+
+  .input {
+    @apply w-full bg-iron-800/60 border border-iron-700/60 text-iron-100 placeholder-iron-500
+           rounded-xl px-4 py-2.5 text-sm outline-none focus:border-amber-500/60
+           focus:ring-2 focus:ring-amber-500/10 transition-all duration-150;
+  }
+
+  .label {
+    @apply block text-xs font-medium text-iron-400 mb-1.5 uppercase tracking-wider;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-disponivel {
+    @apply badge bg-emerald-900/50 text-emerald-400 border border-emerald-800/50;
+  }
+
+  .badge-emprestada {
+    @apply badge bg-amber-900/50 text-amber-400 border border-amber-800/50;
+  }
+
+  .badge-manutencao {
+    @apply badge bg-red-900/50 text-red-400 border border-red-800/50;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+           text-iron-400 hover:text-iron-100 hover:bg-iron-800/60 transition-all duration-150;
+  }
+
+  .nav-link.active {
+    @apply text-amber-400 bg-amber-500/10 border border-amber-500/20;
+  }
+}
