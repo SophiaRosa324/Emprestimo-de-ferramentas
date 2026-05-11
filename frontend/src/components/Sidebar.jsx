@@ -12,6 +12,11 @@ const links = [
   { to: '/relatorios',   icon: BarChart2,        label: 'Relatórios'  },
   { to: '/solicitacoes', icon: ClipboardList, label: 'Solicitações' },
   { to: '/manutencao',   icon: Wrench,          label: 'Manutenção'   },
+  { to: '/empresas-manutecao', icon: ShieldCheck, label: 'Empresas de Manutenção' },
+  { to: '/FerramentasCompradas', icon: Shield, label: 'Ferramentas Compradas', adminOnly: true },
+  { to: '/Igrejas', icon: Shield, label: 'Igrejas', adminOnly: true },
+  { to: '/Extintores', icon: Shield, label: 'Extintores', adminOnly: true },
+
 ]
 
 export default function Sidebar() {
@@ -32,7 +37,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {links.map(({ to, icon: Icon, label }) => (
+        {links.map(({ to, icon: Icon, label, adminOnly }) => (
           <NavLink
             key={to}
             to={to}
@@ -52,18 +57,7 @@ export default function Sidebar() {
             Usuários
           </NavLink>
         )}
-
-        {(isAdmin || usuario?.perfil === 'encarregado') && (
-          <NavLink
-             to="/aprovacoes"
-             className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-        >
-             <ShieldCheck size={16} strokeWidth={1.75} />
-             Aprovações
-           </NavLink>
-        )}
       </nav>
-
       <div className="px-3 py-4 border-t border-iron-800/60 space-y-1">
         <div className="flex items-center gap-3 px-3 py-2">
           <div className="w-7 h-7 rounded-full bg-iron-700 flex items-center justify-center text-xs font-medium text-iron-300">

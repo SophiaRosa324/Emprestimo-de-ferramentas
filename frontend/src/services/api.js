@@ -1,5 +1,92 @@
 export function makeApi(authFetch) {
   return {
+        // ── Igrejas ──────────────────────────────────────────
+    listarIgrejas: (params = {}) => {
+      const q = new URLSearchParams(
+        Object.entries(params).filter(([, v]) => v != null && v !== '')
+      )
+      return authFetch(`/igrejas/?${q}`)
+    },
+
+    obterIgreja: (id) =>
+      authFetch(`/igrejas/${id}`),
+
+    detalhesIgreja: (id) =>
+      authFetch(`/igrejas/${id}/detalhes`),
+
+    criarIgreja: (data) =>
+      authFetch('/igrejas/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }),
+
+    atualizarIgreja: (id, data) =>
+      authFetch(`/igrejas/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }),
+
+    deletarIgreja: (id) =>
+      authFetch(`/igrejas/${id}`, {
+        method: 'DELETE'
+      }),
+
+    resumoIgrejas: () =>
+      authFetch('/igrejas/stats/resumo'),
+
+    // ── Extintores ───────────────────────────────────────
+    listarExtintores: (params = {}) => {
+      const q = new URLSearchParams(
+        Object.entries(params).filter(([, v]) => v != null && v !== '')
+      )
+      return authFetch(`/extintores/?${q}`)
+    },
+
+    obterExtintor: (id) =>
+      authFetch(`/extintores/${id}`),
+
+    criarExtintor: (data) =>
+      authFetch('/extintores/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }),
+
+    atualizarExtintor: (id, data) =>
+      authFetch(`/extintores/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }),
+
+    deletarExtintor: (id) =>
+      authFetch(`/extintores/${id}`, {
+        method: 'DELETE'
+      }),
+
+    dashboardExtintores: (params = {}) => {
+      const q = new URLSearchParams(
+        Object.entries(params).filter(([, v]) => v != null && v !== '')
+      )
+      return authFetch(`/extintores/dashboard/resumo?${q}`)
+    },
+
+    extintoresVencendo: (params = {}) => {
+      const q = new URLSearchParams(
+        Object.entries(params).filter(([, v]) => v != null && v !== '')
+      )
+      return authFetch(`/extintores/vencendo?${q}`)
+    },
+
+    exportarExtintoresExcel: (params = {}) => {
+      const q = new URLSearchParams(
+        Object.entries(params).filter(([, v]) => v != null && v !== '')
+      )
+      return `/api/extintores/exportar/excel?${q}`
+    },
+    
     // ── Ferramentas ──────────────────────────────────────
     listarFerramentas: (params = {}) => {
       const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ''))
@@ -90,7 +177,8 @@ export function makeApi(authFetch) {
     relatorioAtrasados:      (p={}) => { const q = new URLSearchParams(Object.entries(p).filter(([,v])=>v!=null&&v!=='')); return authFetch(`/relatorios/atrasados?${q}`) },
     relatorioUsoPorSetor:    (p={}) => { const q = new URLSearchParams(Object.entries(p).filter(([,v])=>v!=null&&v!=='')); return authFetch(`/relatorios/uso-por-setor?${q}`) },
     relatorioSolPendentes:   (p={}) => { const q = new URLSearchParams(Object.entries(p).filter(([,v])=>v!=null&&v!=='')); return authFetch(`/relatorios/solicitacoes-pendentes?${q}`) },
-    relatorioReservasAtivas: ()     => authFetch('/relatorios/reservas-ativas'),
+    relatorioReservasAtivas: (p={}) => { const q = new URLSearchParams(Object.entries(p).filter(([,v])=>v!=null&&v!=='')); return authFetch(`/relatorios/reservas-ativas?${q}`) },
+
     exportarFerramentas:     (p={}) => { const q = new URLSearchParams(Object.entries(p).filter(([,v])=>v!=null&&v!=='')); return `/api/relatorios/exportar/ferramentas?${q}` },
     exportarEmprestimos:     (p={}) => { const q = new URLSearchParams(Object.entries(p).filter(([,v])=>v!=null&&v!=='')); return `/api/relatorios/exportar/emprestimos?${q}` },
 
@@ -100,5 +188,13 @@ export function makeApi(authFetch) {
     atualizarUsuario:   (id, data) => authFetch(`/auth/usuarios/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
     toggleUsuarioAtivo: (id)       => authFetch(`/auth/usuarios/${id}/ativo`, { method:'PATCH' }),
     deletarUsuario:     (id)       => authFetch(`/auth/usuarios/${id}`, { method:'DELETE' }),
+
+    // ── NFe ───────────────────────────────────────────────
+    listarCompras:       ()        => authFetch('/compras/'),
+    resumoCompras:       ()        => authFetch('/compras/resumo/stats'),
+    criarCompra:         (dados)   => authFetch('/compras/', {method: 'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(dados),}),
+    deletarCompra:       (id)      => authFetch(`/compras/${id}`, {method: 'DELETE',}),
+    parsearNFe:          (formData)=> authFetch('/compras/nfe/parse', {method: 'POST',body: formData,}),
+    uploadNotaFiscal:    (formData)=> authFetch('/compras/nfe/upload', {method: 'POST',body: formData,}),
   }
 }

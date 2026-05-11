@@ -33,10 +33,10 @@ function FotoUpload({ preview, onChange }) {
   )
 }
 
-function FerramentaForm({ inicial = {}, categorias, onSave, onCancel }) {
+function FerramentaForm({ inicial = {}, categorias, igrejas, onSave, onCancel }) {
   const [form, setForm] = useState({
     nome: '', descricao: '', numero_serie: '', localizacao: '',
-    estado: 'disponivel', categoria_id: '', ...inicial,
+    estado: 'disponivel', categoria_id: '', igreja_id: '', ...inicial,
   })
   const [fotoFile, setFotoFile] = useState(null)
   const [fotoPreview, setFotoPreview] = useState(inicial.foto ? `/api/uploads/${inicial.foto}` : null)
@@ -57,6 +57,7 @@ function FerramentaForm({ inicial = {}, categorias, onSave, onCancel }) {
       const payload = {
         ...form,
         categoria_id: form.categoria_id ? parseInt(form.categoria_id) : null,
+        igreja_id: form.igreja_id ? parseInt(form.igreja_id) : null,
       }
       await onSave(payload, fotoFile)
     } finally {
@@ -92,6 +93,22 @@ function FerramentaForm({ inicial = {}, categorias, onSave, onCancel }) {
           </select>
         </div>
         <div>
+          <label className="label">Igreja</label>
+          <select
+            className="input"
+            value={form.igreja_id}
+            onChange={e => set('igreja_id', e.target.value)}
+          >
+            <option value="">Sem igreja</option>
+
+            {igrejas.map(i => (
+              <option key={i.id} value={i.id}>
+                {i.nome}
+              </option>
+            ))}
+          </select>
+      </div>
+        <div>
           <label className="label">Estado</label>
           <select className="input" value={form.estado} onChange={e => set('estado', e.target.value)}>
             {ESTADOS.map(e => <option key={e} value={e}>{ESTADO_LABELS[e]}</option>)}
@@ -120,21 +137,25 @@ export default function Ferramentas() {
   const [busca, setBusca] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
   const [filtroCategoria, setFiltroCategoria] = useState('')
+  const [filtroIgreja, setFiltroIgreja] = useState('')
   const [modal, setModal] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [igrejas, setIgrejas] = useState([])
 
   const carregar = useCallback(async () => {
     setLoading(true)
     try {
-      const [f, c] = await Promise.all([
-        api.listarFerramentas({ busca: busca || undefined, estado: filtroEstado || undefined, categoria_id: filtroCategoria || undefined }),
+      const [f, c, i] = await Promise.all([
+        api.listarFerramentas({ busca: busca || undefined, estado: filtroEstado || undefined, categoria_id: filtroCategoria || undefined, igreja_id: filtroIgreja || undefined }),
         api.listarCategorias(),
+        api.listarIgrejas()
       ])
       setFerramentas(f)
       setCategorias(c)
+      setIgrejas(i)
     } catch { toast.error('Erro ao carregar ferramentas') }
     finally { setLoading(false) }
-  }, [busca, filtroEstado, filtroCategoria])
+  }, [busca, filtroEstado, filtroCategoria, filtroIgreja])
 
   useEffect(() => { carregar() }, [carregar])
 
@@ -188,6 +209,10 @@ export default function Ferramentas() {
           <option value="">Todas as categorias</option>
           {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
         </select>
+        <select className="input w-44" value={filtroIgreja} onChange={e => setFiltroIgreja(e.target.value)}>
+          <option value="">Todas as igrejas</option>
+          {igrejas.map(i => <option key={i.id} value={i.id}>{i.nome}</option>)}
+        </select>
       </div>
 
       {/* Grid */}
@@ -223,6 +248,11 @@ export default function Ferramentas() {
                   <StatusBadge estado={f.estado} />
                 </div>
                 <p className="text-xs text-iron-500 mt-1 truncate">{f.localizacao || 'Sem localização'}</p>
+                {f.igreja_nome && (
+                <p className="text-xs text-blue-400 mt-1">
+                  igreja {f.igreja_nome}
+                </p>
+                )}
                 {f.categoria && (
                   <span className="mt-2 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-iron-800 text-iron-400">
                     {f.categoria.nome}
@@ -249,6 +279,7 @@ export default function Ferramentas() {
           <FerramentaForm
             inicial={modal !== 'criar' ? modal : {}}
             categorias={categorias}
+            igrejas={igrejas}
             onSave={salvar}
             onCancel={() => setModal(null)}
           />

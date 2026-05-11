@@ -1,465 +1,360 @@
-from database import SessionLocal
-import models
-from routers.auth import hash_senha
-from datetime import datetime, timedelta
-import random
+# seed.py
+
+from datetime import datetime, timedelta, date
+from sqlalchemy.orm import Session
+
+from database import SessionLocal, engine, Base
+from models import (
+    Igreja,
+    Extintor,
+    Usuario,
+    Categoria,
+    Responsavel,
+    EmpresaManutencao,
+    Ferramenta,
+    Emprestimo,
+    Manutencao,
+    Solicitacao,
+    Reserva,
+)
+
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def hash_senha(senha: str):
+    return pwd_context.hash(senha)
 
 
 def seed():
-
-    db = SessionLocal()
-
-    try:
-
-        # =====================================================
-        # USUÁRIOS
-        # =====================================================
-        if db.query(models.Usuario).count() == 0:
-
-            usuarios = [
-
-                models.Usuario(
-                    nome="Administrador Geral",
-                    email="admin@admin.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="admin",
-                    setor="geral",
-                    nivel_setor="administrador",
-                    ativo=True
-                ),
-
-                models.Usuario(
-                    nome="João Silva",
-                    email="joao@igreja.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="encarregado",
-                    setor="manutencao",
-                    nivel_setor="encarregado",
-                    ativo=True
-                ),
-
-                models.Usuario(
-                    nome="Maria Souza",
-                    email="maria@igreja.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="operador",
-                    setor="limpeza",
-                    nivel_setor="membro",
-                    ativo=True
-                ),
-
-                models.Usuario(
-                    nome="Carlos Mendes",
-                    email="carlos@igreja.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="operador",
-                    setor="eletrica",
-                    nivel_setor="membro",
-                    ativo=True
-                ),
-
-                models.Usuario(
-                    nome="Fernanda Lima",
-                    email="fernanda@igreja.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="operador",
-                    setor="jardinagem",
-                    nivel_setor="membro",
-                    ativo=True
-                ),
-
-                models.Usuario(
-                    nome="Pedro Rocha",
-                    email="pedro@igreja.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="encarregado",
-                    setor="som",
-                    nivel_setor="encarregado",
-                    ativo=True
-                ),
-
-                models.Usuario(
-                    nome="Ana Paula",
-                    email="ana@igreja.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="operador",
-                    setor="midia",
-                    nivel_setor="membro",
-                    ativo=True
-                ),
-
-                models.Usuario(
-                    nome="Lucas Ribeiro",
-                    email="lucas@igreja.com",
-                    senha_hash=hash_senha("123456"),
-                    perfil="operador",
-                    setor="hidraulica",
-                    nivel_setor="membro",
-                    ativo=True
-                ),
-            ]
-
-            db.add_all(usuarios)
-            db.commit()
-
-            print("✅ Usuários criados")
-
-        usuarios = db.query(models.Usuario).all()
-
-        # =====================================================
-        # CATEGORIAS
-        # =====================================================
-        if db.query(models.Categoria).count() == 0:
-
-            categorias = [
-
-                models.Categoria(nome="Elétrica", cor="#f59e0b"),
-                models.Categoria(nome="Construção", cor="#6366f1"),
-                models.Categoria(nome="Limpeza", cor="#10b981"),
-                models.Categoria(nome="Jardinagem", cor="#22c55e"),
-                models.Categoria(nome="Hidráulica", cor="#06b6d4"),
-                models.Categoria(nome="Som", cor="#8b5cf6"),
-                models.Categoria(nome="Iluminação", cor="#f43f5e"),
-                models.Categoria(nome="Pintura", cor="#ec4899"),
-                models.Categoria(nome="Mídia", cor="#14b8a6"),
-            ]
-
-            db.add_all(categorias)
-            db.commit()
-
-            print("✅ Categorias criadas")
-
-        categorias = db.query(models.Categoria).all()
-
-        categoria_map = {c.nome: c.id for c in categorias}
-
-        # =====================================================
-        # FERRAMENTAS
-        # =====================================================
-        if db.query(models.Ferramenta).count() == 0:
-
-            ferramentas = [
-
-                # Elétrica
-                models.Ferramenta(
-                    nome="Furadeira Bosch",
-                    descricao="Furadeira profissional 750W",
-                    numero_serie="EL001",
-                    localizacao="Sala Técnica",
-                    estado="disponivel",
-                  
-                    categoria_id=categoria_map["Elétrica"]
-                ),
-
-                models.Ferramenta(
-                    nome="Parafusadeira Makita",
-                    descricao="Parafusadeira industrial",
-                    numero_serie="EL002",
-                    localizacao="Sala Técnica",
-                    estado="emprestada",
-              
-                    categoria_id=categoria_map["Elétrica"]
-                ),
-
-                models.Ferramenta(
-                    nome="Multímetro Digital",
-                    descricao="Multímetro profissional",
-                    numero_serie="EL003",
-                    localizacao="Elétrica",
-                    estado="disponivel",
-                    
-                    categoria_id=categoria_map["Elétrica"]
-                ),
-
-                # Construção
-                models.Ferramenta(
-                    nome="Martelo Tramontina",
-                    descricao="Martelo profissional",
-                    numero_serie="CO001",
-                    localizacao="Oficina",
-                    estado="disponivel",
-                 
-                    categoria_id=categoria_map["Construção"]
-                ),
-
-                models.Ferramenta(
-                    nome="Escada Alumínio",
-                    descricao="Escada 7 degraus",
-                    numero_serie="CO002",
-                    localizacao="Depósito",
-                    estado="disponivel",
-                   
-                    categoria_id=categoria_map["Construção"]
-                ),
-
-                models.Ferramenta(
-                    nome="Serra Mármore",
-                    descricao="Serra elétrica",
-                    numero_serie="CO003",
-                    localizacao="Construção",
-                    estado="manutencao",
-                    
-                    categoria_id=categoria_map["Construção"]
-                ),
-
-                # Limpeza
-                models.Ferramenta(
-                    nome="Lavadora WAP",
-                    descricao="Lavadora de alta pressão",
-                    numero_serie="LI001",
-                    localizacao="Limpeza",
-                    estado="manutencao",
-                    
-                    categoria_id=categoria_map["Limpeza"]
-                ),
-
-                models.Ferramenta(
-                    nome="Vassoura Industrial",
-                    descricao="Vassoura reforçada",
-                    numero_serie="LI002",
-                    localizacao="Depósito",
-                    estado="disponivel",
-                    
-                    categoria_id=categoria_map["Limpeza"]
-                ),
-
-                # Jardinagem
-                models.Ferramenta(
-                    nome="Cortador de Grama",
-                    descricao="Cortador elétrico",
-                    numero_serie="JA001",
-                    localizacao="Área Externa",
-                    estado="emprestada",
-                  
-                    categoria_id=categoria_map["Jardinagem"]
-                ),
-
-                models.Ferramenta(
-                    nome="Mangueira 30m",
-                    descricao="Mangueira reforçada",
-                    numero_serie="JA002",
-                    localizacao="Jardim",
-                    estado="disponivel",
-                
-                    categoria_id=categoria_map["Jardinagem"]
-                ),
-
-                # Som
-                models.Ferramenta(
-                    nome="Mesa de Som Yamaha",
-                    descricao="Mesa 12 canais",
-                    numero_serie="SO001",
-                    localizacao="Auditório",
-                    estado="disponivel",
-                
-                    categoria_id=categoria_map["Som"]
-                ),
-
-                models.Ferramenta(
-                    nome="Microfone Sem Fio",
-                    descricao="Microfone profissional",
-                    numero_serie="SO002",
-                    localizacao="Auditório",
-                    estado="emprestada",
-                
-                    categoria_id=categoria_map["Som"]
-                ),
-
-                # Iluminação
-                models.Ferramenta(
-                    nome="Refletor LED",
-                    descricao="Refletor 200W",
-                    numero_serie="IL001",
-                    localizacao="Palco",
-                    estado="disponivel",
-                  
-                    categoria_id=categoria_map["Iluminação"]
-                ),
-
-                # Mídia
-                models.Ferramenta(
-                    nome="Câmera Canon",
-                    descricao="Câmera DSLR",
-                    numero_serie="MI001",
-                    localizacao="Mídia",
-                    estado="disponivel",
-                 
-                    categoria_id=categoria_map["Mídia"]
-                ),
-            ]
-
-            db.add_all(ferramentas)
-            db.commit()
-
-            print("✅ Ferramentas criadas")
-
-        ferramentas = db.query(models.Ferramenta).all()
-
-        # =====================================================
-        # RESPONSÁVEIS
-        # =====================================================
-        if db.query(models.Responsavel).count() == 0:
-
-            responsaveis = [
-
-                models.Responsavel(
-                    nome="Carlos Técnico",
-                    contato="manutencao"
-                ),
-
-                models.Responsavel(
-                    nome="Equipe Limpeza",
-                    contato="limpeza"
-                ),
-
-                models.Responsavel(
-                    nome="Pedro Jardinagem",
-                    contato="jardinagem"
-                ),
-
-                models.Responsavel(
-                    nome="Ministério Louvor",
-                    contato="som"
-                ),
-
-                models.Responsavel(
-                    nome="Equipe Mídia",
-                    contato="midia"
-                ),
-            ]
-
-            db.add_all(responsaveis)
-            db.commit()
-
-            print("✅ Responsáveis criados")
-
-        responsaveis = db.query(models.Responsavel).all()
-
-        # =====================================================
-        # EMPRÉSTIMOS
-        # =====================================================
-        if db.query(models.Emprestimo).count() == 0:
-
-            emprestimos = []
-
-            for i in range(20):
-
-                ferramenta = random.choice(ferramentas)
-                responsavel = random.choice(responsaveis)
-
-                data_saida = datetime.utcnow() - timedelta(days=random.randint(1, 60))
-                retorno = data_saida + timedelta(days=random.randint(1, 10))
-
-                devolvida = random.choice([True, False])
-
-                emprestimos.append(
-
-                    models.Emprestimo(
-                        ferramenta_id=ferramenta.id,
-                        responsavel_id=responsavel.id,
-                        data_saida=data_saida,
-                        data_retorno_prevista=retorno,
-                        observacoes=f"Uso interno #{i + 1}",
-                        devolvida=devolvida
-                    )
-
-                )
-
-            db.add_all(emprestimos)
-            db.commit()
-
-            print("✅ Empréstimos criados")
-
-        # =====================================================
-        # RESERVAS
-        # =====================================================
-        if db.query(models.Reserva).count() == 0:
-
-            reservas = []
-
-            for i in range(10):
-
-                reservas.append(
-
-                    models.Reserva(
-                        ferramenta_id=random.choice(ferramentas).id,
-                        usuario_id=random.choice(usuarios).id,
-                        data_inicio=datetime.utcnow() + timedelta(days=random.randint(1, 7)),
-                        data_fim=datetime.utcnow() + timedelta(days=random.randint(8, 15)),
-                        status="ativa"
-                    )
-
-                )
-
-            db.add_all(reservas)
-            db.commit()
-
-            print("✅ Reservas criadas")
-
-        # =====================================================
-        # SOLICITAÇÕES
-        # =====================================================
-        if hasattr(models, "Solicitacao"):
-
-            if db.query(models.Solicitacao).count() == 0:
-
-                solicitacoes = [
-
-                    models.Solicitacao(
-                        usuario_id=usuarios[1].id,
-                        item_nome="Extensão Elétrica",
-                        tipo="ferramenta",
-                        status="pendente"
-                    ),
-
-                    models.Solicitacao(
-                        usuario_id=usuarios[2].id,
-                        item_nome="Refletor LED",
-                        tipo="equipamento",
-                        status="aprovada"
-                    ),
-
-                    models.Solicitacao(
-                        usuario_id=usuarios[3].id,
-                        item_nome="Caixa de Ferramentas",
-                        tipo="ferramenta",
-                        status="rejeitada"
-                    ),
-
-                    models.Solicitacao(
-                        usuario_id=usuarios[4].id,
-                        item_nome="Microfone Sem Fio",
-                        tipo="equipamento",
-                        status="pendente"
-                    ),
-
-                    models.Solicitacao(
-                        usuario_id=usuarios[5].id,
-                        item_nome="Escada Grande",
-                        tipo="ferramenta",
-                        status="aprovada"
-                    ),
-                ]
-
-                db.add_all(solicitacoes)
-                db.commit()
-
-                print("✅ Solicitações criadas")
-
-        print("\n🚀 Banco populado com sucesso!")
-
-        print("\n━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print("LOGIN ADMIN")
-        print("Email: admin@admin.com")
-        print("Senha: 123456")
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━")
-
-    except Exception as e:
-        print(f"\n❌ ERRO: {e}")
-
-    finally:
-        db.close()
+    db: Session = SessionLocal()
+
+    print("Limpando banco...")
+
+    # Ordem importa por causa das FKs
+    db.query(Reserva).delete()
+    db.query(Solicitacao).delete()
+    db.query(Manutencao).delete()
+    db.query(Emprestimo).delete()
+    db.query(Ferramenta).delete()
+    db.query(EmpresaManutencao).delete()
+    db.query(Responsavel).delete()
+    db.query(Extintor).delete()
+    db.query(Categoria).delete()
+    db.query(Usuario).delete()
+    db.query(Igreja).delete()
+
+    db.commit()
+
+    print("Criando igrejas...")
+
+    igrejas = [
+        Igreja(
+            nome="Igreja Central",
+            endereco="Rua das Flores, 120",
+            responsavel="Pr. Marcos Silva",
+            telefone="(15) 99999-1111"
+        ),
+        Igreja(
+            nome="Igreja Nova Esperança",
+            endereco="Av. Brasil, 500",
+            responsavel="Pr. João Pedro",
+            telefone="(15) 98888-2222"
+        ),
+        Igreja(
+            nome="Igreja Vida Plena",
+            endereco="Rua da Paz, 78",
+            responsavel="Pra. Ana Clara",
+            telefone="(15) 97777-3333"
+        ),
+    ]
+
+    db.add_all(igrejas)
+    db.commit()
+
+    print("Criando usuários...")
+
+    usuarios = [
+        Usuario(
+            nome="Administrador",
+            email="admin@admin.com",
+            senha_hash=hash_senha("admin123"),
+            perfil="admin",
+            setor="TI",
+            nivel_setor="lider"
+        ),
+        Usuario(
+            nome="Carlos Souza",
+            email="carlos@igreja.com",
+            senha_hash=hash_senha("123456"),
+            perfil="operador",
+            setor="Patrimônio",
+            nivel_setor="membro"
+        ),
+        Usuario(
+            nome="Fernanda Lima",
+            email="fernanda@igreja.com",
+            senha_hash=hash_senha("123456"),
+            perfil="operador",
+            setor="Manutenção",
+            nivel_setor="lider"
+        ),
+    ]
+
+    db.add_all(usuarios)
+    db.commit()
+
+    print("Criando categorias...")
+
+    categorias = [
+        Categoria(
+            nome="Ferramentas Elétricas",
+            cor="#f59e0b",
+            icone="zap",
+            descricao="Ferramentas elétricas em geral"
+        ),
+        Categoria(
+            nome="Ferramentas Manuais",
+            cor="#3b82f6",
+            icone="hammer",
+            descricao="Ferramentas manuais"
+        ),
+        Categoria(
+            nome="Limpeza",
+            cor="#10b981",
+            icone="spray-can",
+            descricao="Equipamentos de limpeza"
+        ),
+        Categoria(
+            nome="Jardinagem",
+            cor="#22c55e",
+            icone="trees",
+            descricao="Ferramentas de jardinagem"
+        ),
+    ]
+
+    db.add_all(categorias)
+    db.commit()
+
+    print("Criando responsáveis...")
+
+    responsaveis = [
+        Responsavel(
+            nome="José Almeida",
+            contato="jose@igreja.com",
+            setor="Patrimônio",
+            cargo="Supervisor"
+        ),
+        Responsavel(
+            nome="Lucas Ferreira",
+            contato="lucas@igreja.com",
+            setor="Manutenção",
+            cargo="Técnico"
+        ),
+        Responsavel(
+            nome="Paulo Henrique",
+            contato="paulo@igreja.com",
+            setor="Obras",
+            cargo="Coordenador"
+        ),
+    ]
+
+    db.add_all(responsaveis)
+    db.commit()
+
+    print("Criando empresas de manutenção...")
+
+    empresas = [
+        EmpresaManutencao(
+            nome="Tech Manutenção Industrial",
+            telefone="(15) 4002-8922",
+            email="contato@techmanutencao.com",
+            endereco="Sorocaba/SP",
+            tipo_servico="Ferramentas elétricas"
+        ),
+        EmpresaManutencao(
+            nome="ExtinFire Segurança",
+            telefone="(15) 3333-4444",
+            email="suporte@extinfire.com",
+            endereco="Votorantim/SP",
+            tipo_servico="Recarga de extintores"
+        ),
+    ]
+
+    db.add_all(empresas)
+    db.commit()
+
+    print("Criando ferramentas...")
+
+    ferramentas = [
+        Ferramenta(
+            codigo="FER001",
+            nome="Furadeira Bosch",
+            descricao="Furadeira de impacto 750W",
+            numero_serie="BSH-8821",
+            localizacao="Sala de ferramentas",
+            estado="disponivel",
+            categoria_id=categorias[0].id,
+            igreja_id=igrejas[0].id
+        ),
+        Ferramenta(
+            codigo="FER002",
+            nome="Parafusadeira Makita",
+            descricao="Parafusadeira profissional",
+            numero_serie="MK-7788",
+            localizacao="Almoxarifado",
+            estado="emprestado",
+            categoria_id=categorias[0].id,
+            igreja_id=igrejas[0].id
+        ),
+        Ferramenta(
+            codigo="FER003",
+            nome="Martelo Tramontina",
+            descricao="Martelo de aço",
+            numero_serie="TRM-1122",
+            localizacao="Oficina",
+            estado="disponivel",
+            categoria_id=categorias[1].id,
+            igreja_id=igrejas[1].id
+        ),
+        Ferramenta(
+            codigo="FER004",
+            nome="Roçadeira Stihl",
+            descricao="Roçadeira para jardim",
+            numero_serie="STH-9988",
+            localizacao="Área externa",
+            estado="manutencao",
+            categoria_id=categorias[3].id,
+            igreja_id=igrejas[2].id
+        ),
+        Ferramenta(
+            codigo="FER005",
+            nome="Lavadora WAP",
+            descricao="Lavadora de alta pressão",
+            numero_serie="WAP-5544",
+            localizacao="Depósito",
+            estado="disponivel",
+            categoria_id=categorias[2].id,
+            igreja_id=igrejas[1].id
+        ),
+    ]
+
+    db.add_all(ferramentas)
+    db.commit()
+
+    print("Criando extintores...")
+
+    extintores = [
+        Extintor(
+            patrimonio="EXT001",
+            tipo="ABC",
+            capacidade="6kg",
+            localizacao="Entrada principal",
+            data_validade=date.today() + timedelta(days=365),
+            data_ultima_carga=date.today() - timedelta(days=120),
+            igreja_id=igrejas[0].id
+        ),
+        Extintor(
+            patrimonio="EXT002",
+            tipo="CO2",
+            capacidade="4kg",
+            localizacao="Sala de som",
+            data_validade=date.today() + timedelta(days=250),
+            data_ultima_carga=date.today() - timedelta(days=90),
+            igreja_id=igrejas[1].id
+        ),
+        Extintor(
+            patrimonio="EXT003",
+            tipo="Água",
+            capacidade="10L",
+            localizacao="Cozinha",
+            data_validade=date.today() + timedelta(days=180),
+            data_ultima_carga=date.today() - timedelta(days=60),
+            igreja_id=igrejas[2].id
+        ),
+    ]
+
+    db.add_all(extintores)
+    db.commit()
+
+    print("Criando empréstimos...")
+
+    emprestimos = [
+        Emprestimo(
+            ferramenta_id=ferramentas[1].id,
+            responsavel_id=responsaveis[0].id,
+            data_saida=datetime.utcnow() - timedelta(days=2),
+            data_retorno_prevista=datetime.utcnow() + timedelta(days=5),
+            observacoes="Uso em manutenção elétrica",
+            devolvida=False
+        ),
+    ]
+
+    db.add_all(emprestimos)
+    db.commit()
+
+    print("Criando manutenções...")
+
+    manutencoes = [
+        Manutencao(
+            ferramenta_id=ferramentas[3].id,
+            empresa_id=empresas[0].id,
+            problema="Motor falhando",
+            descricao_servico="Troca de peças internas",
+            data_envio=datetime.utcnow() - timedelta(days=3),
+            data_retorno_prev=datetime.utcnow() + timedelta(days=7),
+            valor=450.00,
+            status="em_manutencao",
+            observacoes="Aguardando peças"
+        ),
+    ]
+
+    db.add_all(manutencoes)
+    db.commit()
+
+    print("Criando solicitações...")
+
+    solicitacoes = [
+        Solicitacao(
+            usuario_id=usuarios[1].id,
+            setor="Patrimônio",
+            tipo="compra",
+            item_nome="Escada de alumínio",
+            descricao="Necessária para manutenção do templo",
+            status="pendente"
+        ),
+        Solicitacao(
+            usuario_id=usuarios[2].id,
+            setor="Manutenção",
+            tipo="manutencao",
+            item_nome="Furadeira Bosch",
+            descricao="Equipamento apresentando superaquecimento",
+            status="aprovada"
+        ),
+    ]
+
+    db.add_all(solicitacoes)
+    db.commit()
+
+    print("Criando reservas...")
+
+    reservas = [
+        Reserva(
+            ferramenta_id=ferramentas[0].id,
+            usuario_id=usuarios[1].id,
+            data_inicio=datetime.utcnow() + timedelta(days=1),
+            data_fim=datetime.utcnow() + timedelta(days=2),
+            status="ativa"
+        ),
+    ]
+
+    db.add_all(reservas)
+    db.commit()
+
+    print("Seed finalizada com sucesso!")
 
 
 if __name__ == "__main__":
+    Base.metadata.create_all(bind=engine)
     seed()

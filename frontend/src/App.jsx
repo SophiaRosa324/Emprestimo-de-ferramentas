@@ -11,8 +11,11 @@ import Categorias from './pages/Categorias'
 import Relatorios from './pages/Relatorios'
 import Usuarios from './pages/Usuarios'
 import Solicitacoes from './pages/Solicitacoes'
-import Aprovacoes from './pages/Aprovacoes'
 import Manutencao from './pages/Manutencao'
+import EmpresasManutecao from './pages/EmpresasManutencao'
+import FerramentasCompradas from './pages/FerramentasCompradas'
+import Igrejas from './pages/Igrejas'
+import Extintores from './pages/Extintores'
 
 function AppLayout() {
   const { usuario } = useAuth()
@@ -24,14 +27,17 @@ function AppLayout() {
         <Routes>
           <Route path="/"             element={<Dashboard />} />
           <Route path="/ferramentas"  element={<Ferramentas />} />
+          <Route path="/FerramentasCompradas"  element={<FerramentasCompradas />} />
           <Route path="/emprestimos"  element={<Emprestimos />} />
           <Route path="/responsaveis" element={<Responsaveis />} />
           <Route path="/categorias"   element={<Categorias />} />
           <Route path="/relatorios"   element={<Relatorios />} />
           <Route path="/usuarios"     element={<Usuarios />} />
           <Route path="/solicitacoes" element={<Solicitacoes />} />
-          <Route path="/aprovacoes"   element={<Aprovacoes />} />
-          <Route path="/manutencao" element={<Manutencao />} />
+          <Route path="/manutencao"   element={<Manutencao />} />
+          <Route path="/empresas-manutecao" element={<EmpresasManutecao />} />
+          <Route path="/Igrejas"      element={<Igrejas />} />
+          <Route path="/Extintores"   element={<Extintores />} /> 
           <Route path="*"             element={<Navigate to="/" />} />
         </Routes>
       </main>

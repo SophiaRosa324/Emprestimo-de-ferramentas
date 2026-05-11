@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import toast from 'react-hot-toast'
 
 const AuthContext = createContext(null)
-
 const TOKEN_KEY = 'toolvault_token'
 const USER_KEY  = 'toolvault_user'
 
