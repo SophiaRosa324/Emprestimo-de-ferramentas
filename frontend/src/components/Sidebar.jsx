@@ -11,6 +11,7 @@ const links = [
   { to: '/categorias',   icon: Tag,              label: 'Categorias'  },
   { to: '/relatorios',   icon: BarChart2,        label: 'Relatórios'  },
   { to: '/solicitacoes', icon: ClipboardList, label: 'Solicitações' },
+  { to: '/manutencao',   icon: Wrench,          label: 'Manutenção'   },
 ]
 
 export default function Sidebar() {

@@ -1,34 +1,3 @@
-// ============================================================
-// ADIÇÕES AO services/api.js — Bloco 1
-// Adicione estas funções dentro do objeto retornado por makeApi()
-// ============================================================
-
-/*
-    // ── Responsáveis (atualizado) ──────────────────────
-    listarResponsaveis: (params = {}) => {
-      const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ''))
-      return authFetch(`/responsaveis/?${q}`)
-    },
-    criarResponsavel:    (data) => authFetch('/responsaveis/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    atualizarResponsavel:(id, data) => authFetch(`/responsaveis/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    deletarResponsavel:  (id)   => authFetch(`/responsaveis/${id}`, { method:'DELETE' }),
-    detalhesResponsavel: (id)   => authFetch(`/responsaveis/${id}/detalhes`),
-
-    // ── Categorias (atualizado) ────────────────────────
-    listarCategorias: (params = {}) => {
-      const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ''))
-      return authFetch(`/categorias/?${q}`)
-    },
-    criarCategoria:    (data) => authFetch('/categorias/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    atualizarCategoria:(id, data) => authFetch(`/categorias/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    deletarCategoria:  (id)   => authFetch(`/categorias/${id}`, { method:'DELETE' }),
-    detalhesCategoria: (id)   => authFetch(`/categorias/${id}/detalhes`),
-*/
-
-// ============================================================
-// VERSÃO COMPLETA DO api.js — substitua o arquivo inteiro
-// ============================================================
-
 export function makeApi(authFetch) {
   return {
     // ── Ferramentas ──────────────────────────────────────
@@ -50,20 +19,20 @@ export function makeApi(authFetch) {
       const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ''))
       return authFetch(`/categorias/?${q}`)
     },
-    criarCategoria:    (data)      => authFetch('/categorias/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    atualizarCategoria:(id, data)  => authFetch(`/categorias/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    deletarCategoria:  (id)        => authFetch(`/categorias/${id}`, { method:'DELETE' }),
-    detalhesCategoria: (id)        => authFetch(`/categorias/${id}/detalhes`),
+    criarCategoria:    (data)     => authFetch('/categorias/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    atualizarCategoria:(id, data) => authFetch(`/categorias/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    deletarCategoria:  (id)       => authFetch(`/categorias/${id}`, { method:'DELETE' }),
+    detalhesCategoria: (id)       => authFetch(`/categorias/${id}/detalhes`),
 
     // ── Responsáveis ─────────────────────────────────────
     listarResponsaveis: (params = {}) => {
       const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ''))
       return authFetch(`/responsaveis/?${q}`)
     },
-    criarResponsavel:    (data)      => authFetch('/responsaveis/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    atualizarResponsavel:(id, data)  => authFetch(`/responsaveis/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
-    deletarResponsavel:  (id)        => authFetch(`/responsaveis/${id}`, { method:'DELETE' }),
-    detalhesResponsavel: (id)        => authFetch(`/responsaveis/${id}/detalhes`),
+    criarResponsavel:    (data)     => authFetch('/responsaveis/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    atualizarResponsavel:(id, data) => authFetch(`/responsaveis/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    deletarResponsavel:  (id)       => authFetch(`/responsaveis/${id}`, { method:'DELETE' }),
+    detalhesResponsavel: (id)       => authFetch(`/responsaveis/${id}/detalhes`),
 
     // ── Empréstimos ──────────────────────────────────────
     listarEmprestimos: (params = {}) => {
@@ -72,6 +41,29 @@ export function makeApi(authFetch) {
     },
     registrarEmprestimo: (data)        => authFetch('/emprestimos/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
     registrarDevolucao:  (id, data={}) => authFetch(`/emprestimos/${id}/devolver`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+
+    // ── Manutenção ───────────────────────────────────────
+    listarManutencoes: (params = {}) => {
+      const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ''))
+      return authFetch(`/manutencao/?${q}`)
+    },
+    obterManutencao:          (id)       => authFetch(`/manutencao/${id}`),
+    criarManutencao:          (data)     => authFetch('/manutencao/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    atualizarManutencao:      (id, data) => authFetch(`/manutencao/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    avancarStatusManutencao:  (id, data) => authFetch(`/manutencao/${id}/status`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    deletarManutencao:        (id)       => authFetch(`/manutencao/${id}`, { method:'DELETE' }),
+    resumoManutencao:         ()         => authFetch('/manutencao/resumo/stats'),
+    historicoManutencaoFerramenta: (fId) => authFetch(`/manutencao/ferramenta/${fId}/historico`),
+
+    // ── Empresas de manutenção ───────────────────────────
+    listarEmpresasManutencao: (params = {}) => {
+      const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== ''))
+      return authFetch(`/empresas-manutencao/?${q}`)
+    },
+    obterEmpresaManutencao:   (id)       => authFetch(`/empresas-manutencao/${id}`),
+    criarEmpresaManutencao:   (data)     => authFetch('/empresas-manutencao/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    atualizarEmpresaManutencao:(id, data)=> authFetch(`/empresas-manutencao/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }),
+    deletarEmpresaManutencao: (id)       => authFetch(`/empresas-manutencao/${id}`, { method:'DELETE' }),
 
     // ── Solicitações ─────────────────────────────────────
     listarSolicitacoes: (params = {}) => {

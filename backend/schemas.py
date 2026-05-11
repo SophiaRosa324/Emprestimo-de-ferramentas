@@ -93,3 +93,4 @@ class EmprestimoOut(EmprestimoBase):
     responsavel: Optional[ResponsavelOut] = None
     class Config:
         from_attributes = True
+        

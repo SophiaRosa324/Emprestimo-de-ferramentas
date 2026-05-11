@@ -12,6 +12,7 @@ import Relatorios from './pages/Relatorios'
 import Usuarios from './pages/Usuarios'
 import Solicitacoes from './pages/Solicitacoes'
 import Aprovacoes from './pages/Aprovacoes'
+import Manutencao from './pages/Manutencao'
 
 function AppLayout() {
   const { usuario } = useAuth()
@@ -30,6 +31,7 @@ function AppLayout() {
           <Route path="/usuarios"     element={<Usuarios />} />
           <Route path="/solicitacoes" element={<Solicitacoes />} />
           <Route path="/aprovacoes"   element={<Aprovacoes />} />
+          <Route path="/manutencao" element={<Manutencao />} />
           <Route path="*"             element={<Navigate to="/" />} />
         </Routes>
       </main>
