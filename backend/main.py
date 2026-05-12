@@ -51,8 +51,8 @@ app = FastAPI(title="ToolVault API", version="3.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "http://localhost:5173",
-    "https://emprestimo-de-ferramentas.vercel.app",
+        "http://localhost:5173",
+        "https://emprestimo-de-ferramentas-9si297xfg-sophiarosa324s-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
