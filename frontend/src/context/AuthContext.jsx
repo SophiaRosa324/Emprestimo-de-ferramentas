@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import toast from 'react-hot-toast'
 
+const API_URL = import.meta.env.VITE_API_URL
 const AuthContext = createContext(null)
 const TOKEN_KEY = 'toolvault_token'
 const USER_KEY  = 'toolvault_user'
@@ -15,7 +16,7 @@ export function AuthProvider({ children }) {
   // Enriquece todas as chamadas com o token
 
   const authFetch = useCallback(async (path, opts = {}) => {
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${API_URL}${path}`, {
     ...opts,
     headers: {
       ...(opts.headers || {}),
@@ -39,7 +40,7 @@ export function AuthProvider({ children }) {
 }, [token])
 
   const authFetchRaw = useCallback(async (path, opts = {}) => {
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${API_URL}${path}`, {
     ...opts,
     headers: {
       ...(opts.headers || {}),
@@ -59,7 +60,7 @@ export function AuthProvider({ children }) {
     setLoading(true)
     try {
       const form = new URLSearchParams({ username: email, password: senha })
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: form,
@@ -82,7 +83,7 @@ export function AuthProvider({ children }) {
   const registrar = async (nome, email, senha) => {
     setLoading(true)
     try {
-      const res = await fetch('/api/auth/registrar', {
+      const res = await fetch(`${API_URL}/auth/registrar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome, email, senha, perfil: 'operador' }),
