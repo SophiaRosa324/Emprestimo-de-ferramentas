@@ -10,7 +10,7 @@ from routers.igrejas        import router as igrejas_router
 from routers.extintores     import router as extintores_router
 from routers.reports        import router as reports_router
 from routers.responsaveis   import router as resp_router
-
+from routers.dashboard import router as dashboard_router
 # Importa routers que podem existir de blocos anteriores
 try:
     from routers.auth import router as auth_router, get_usuario_atual, hash_senha
@@ -78,7 +78,7 @@ app.include_router(igrejas_router,    dependencies=_auth)
 app.include_router(extintores_router, dependencies=_auth)
 app.include_router(reports_router,    dependencies=_auth)
 app.include_router(resp_router,       dependencies=_auth)
-
+app.include_router(dashboard_router,  dependencies=_auth)
 if _extras:
     app.include_router(loans_router,      dependencies=_auth)
     app.include_router(categories_router, dependencies=_auth)
