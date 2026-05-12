@@ -14,13 +14,6 @@ from routers.dashboard      import router as dashboard_router
 from routers.solicitacoes   import router as solicitacoes_router
 from routers.compras        import router as compras_router
 # Importa routers que podem existir de blocos anteriores
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 try:
     from routers.auth import router as auth_router, get_usuario_atual, hash_senha
