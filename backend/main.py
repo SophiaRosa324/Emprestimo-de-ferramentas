@@ -46,6 +46,13 @@ if _auth_disponivel:
             db.close()
     _seed_admin()
 
+try:
+    from seed import seed
+    seed()
+    print("Seed executada com sucesso!")
+except Exception as e:
+    print("Erro ao executar seed:", e)
+    
 app = FastAPI(title="ToolVault API", version="3.0.0")
 
 app.add_middleware(

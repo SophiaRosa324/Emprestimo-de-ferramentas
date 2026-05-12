@@ -29,24 +29,10 @@ def hash_senha(senha: str):
 
 def seed():
     db: Session = SessionLocal()
-
-    print("Limpando banco...")
-
-    # Ordem importa por causa das FKs
-    db.query(Reserva).delete()
-    db.query(Solicitacao).delete()
-    db.query(Manutencao).delete()
-    db.query(Emprestimo).delete()
-    db.query(Ferramenta).delete()
-    db.query(EmpresaManutencao).delete()
-    db.query(Responsavel).delete()
-    db.query(Extintor).delete()
-    db.query(Categoria).delete()
-    db.query(Usuario).delete()
-    db.query(Igreja).delete()
-
-    db.commit()
-
+    if db.query(Ferramenta).first():
+     print("Banco já populado.")
+     return
+ 
     print("Criando igrejas...")
 
     igrejas = [
