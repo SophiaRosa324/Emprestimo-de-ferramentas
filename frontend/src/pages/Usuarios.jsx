@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { useApi } from '../hooks/useApi'
 import { useAuth } from '../context/AuthContext'
 import Modal from '../components/Modal'
-import DetalhesResponsavel from '../components/DetalhesResponsavel'
+import DetalhesResponsavel from '../components/Detalhesresponsavel'
 
 const NIVEL_LABELS = { membro: 'Membro', encarregado: 'Encarregado', administrador: 'Administrador' }
 const NIVEL_CLS    = {
