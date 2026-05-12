@@ -1,8 +1,5 @@
 {
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
-  ]
+  "framework": "vite",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build"
 }
